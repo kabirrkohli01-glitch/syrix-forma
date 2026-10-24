@@ -1,0 +1,17 @@
+node_modules/
+# Every environment file except the committed template. Written as a wildcard plus one exception
+# rather than a list of known names, so that adding .env.production (or any other) cannot quietly
+# start tracking real credentials.
+.env
+.env.*
+!.env.example
+.next/
+# Any other build directory a deployment build was pointed at with NEXT_DIST_DIR, which exists so
+# that building for deployment from this checkout cannot overwrite what `next dev` is serving.
+.next-*/
+dist/
+build/
+*.log
+*.tsbuildinfo
+/apps/web/.clerk/
+/apps/web/.local-uploads/

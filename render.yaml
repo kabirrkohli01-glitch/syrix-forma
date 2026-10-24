@@ -1,0 +1,106 @@
+# SYRIX Forma — Render Blueprint.
+#
+# Render reads this file and provisions the service from it, so deploying is "New Blueprint
+# Instance", pick the repo, paste the secrets. Nothing is configured by hand in a dashboard, and
+# what runs is what is in version control.
+#
+# Two limits of Render's free instance type, stated here because they are not obvious from the
+# dashboard and both change how the Hub behaves:
+#
+#   1. A free web service SLEEPS after 15 minutes without traffic, and the next request waits
+#      about a minute while it wakes. Staff will see a slow first load after a quiet period.
+#   2. Free instances are web services only — there is no free background worker. The BullMQ
+#      worker (apps/web/worker.ts) therefore does not run here, so automations, task due-date
+#      reminders, Hostinger Mail reconciliation and document-link reachability checks DO NOT
+#      FIRE. Everything a person does in the app works; everything the app was going to do on
+#      its own does not. Adding the worker is a paid instance — see docs/deploying-syrix-forma.md.
+#
+# Neither is a reason not to ship, but neither should be discovered in week three.
+
+services:
+  - type: web
+    name: syrix-forma
+    runtime: docker
+    plan: free
+    region: frankfurt # Closest to the UK of Render's free regions; keeps latency and the data sensible.
+    rootDir: apps/web
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # The web server, not the worker — see the note above.
+    dockerTarget: runner
+    # Not /auth/sign-in. Under ACCESS_CODE_MODE that path answers 307 to the code screen, so
+    # Render judges a perfectly healthy service unhealthy and never routes traffic to it.
+    # /api/health returns 200 in either mode and checks no dependency — see
+    # apps/web/app/api/health/route.ts for why it deliberately does not.
+    healthCheckPath: /api/health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_ENV
+        value: production
+
+      # Access-code mode. Leave every one of these blank for a normal deployment: the mode is
+      # only on when ACCESS_CODE_MODE reads exactly "on", and nothing is inferred from the
+      # presence of the others (lib/auth/access-code-config.ts).
+      #
+      # A hosted deployment in this mode needs no mail credential and must not have one —
+      # preflight refuses to boot if RESEND_API_KEY or NOTIFICATIONS_FROM_EMAIL is set, because
+      # this mode is deliberately unable to send email. Set both to an empty value below.
+      - key: ACCESS_CODE_MODE
+        sync: false
+      - key: ACCESS_CODE
+        sync: false
+      - key: ACCESS_CODE_IDENTITY
+        sync: false
+      - key: ACCESS_CODE_MAX_ATTEMPTS
+        value: '5'
+      - key: ACCESS_CODE_LOCKOUT_MINUTES
+        value: '5'
+
+      # NEXT_PUBLIC_* are inlined into the client bundle at build time. Render exposes these to
+      # the build, and the Dockerfile declares a matching ARG for each.
+      #
+      # The Clerk publishable key is not a secret — it ships to every browser by design — but it
+      # must be the PRODUCTION one: it encodes the Clerk host that the Content-Security-Policy is
+      # built from (lib/security/headers.ts), so building with a development key produces a
+      # policy that blocks sign-in. The app refuses to boot on a pk_test_ key for related reasons
+      # (lib/config/preflight.ts).
+      - key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: NEXT_PUBLIC_SENTRY_DISABLED
+        value: 'true'
+
+      # Secrets. `sync: false` means Render prompts for the value and never stores it in this
+      # file or in git.
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_WEBHOOK_SIGNING_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: MFA_ENCRYPTION_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: NOTIFICATIONS_FROM_EMAIL
+        sync: false
+
+      # SYRIX AI. The Hub holds no provider key of its own; it pairs with the gateway
+      # (docs/forma-ai-architecture.md §2). Without these the assistant is unavailable and
+      # everything else runs.
+      - key: FORMA_AI_GATEWAY_URL
+        sync: false
+      - key: FORMA_AI_GATEWAY_TOKEN
+        sync: false
+      - key: FORMA_AI_GATEWAY_DEVICE
+        sync: false
+
+      # Object storage is deliberately absent. Enabling R2 needs a payment method on the
+      # Cloudflare account, so the Hub is built to run without it: file upload and download
+      # report as unavailable and nothing else is affected. Add all four R2_* values together
+      # when the bucket exists — a partly-configured bucket is refused at boot as a typo.

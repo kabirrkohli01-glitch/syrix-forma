@@ -1,0 +1,209 @@
+/*
+ * SYRIX Forma design tokens (engineering rule 4).
+ * Light: white/light-grey surfaces, restrained blue accent, strong
+ * typography, subtle borders. Dark: charcoal/navy, slightly lighter panels,
+ * same accent — authored separately, not a colour inversion of light.
+ */
+
+[data-theme='forma'] {
+  --background: #f4f5f8;
+  --foreground: oklch(0.17 0.02 258);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.17 0.02 258);
+  --popover: oklch(0.99 0 0);
+  --popover-foreground: oklch(0.17 0.02 258);
+  --primary: #2a5ce4;
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0.008 258);
+  --secondary-foreground: oklch(0.22 0.03 258);
+  --muted: #f0f1f5;
+  --muted-foreground: oklch(0.47 0.02 258);
+  --accent: oklch(0.94 0.02 258);
+  --accent-foreground: oklch(0.3 0.06 258);
+  --destructive: oklch(0.63 0.19 23.03);
+  --destructive-foreground: oklch(1 0 0);
+  --border: #e3e5ed;
+  --input: oklch(0.93 0.008 258);
+  --ring: #2a5ce4;
+  --chart-1: oklch(0.55 0.15 258);
+  --chart-2: oklch(0.7 0.11 200);
+  --chart-3: oklch(0.6 0.1 300);
+  --chart-4: oklch(0.74 0.12 150);
+  --chart-5: oklch(0.66 0.15 45);
+  /* Sidebar is fixed dark grey regardless of the light/dark toggle (product-owner-supplied
+     reference) — these values are declared once here, unconditionally, and the .dark block below
+     deliberately does not redefine them. */
+  --sidebar: #1c1c1e;
+  --sidebar-foreground: #d4d4d8;
+  --sidebar-primary: #e4e4e7;
+  --sidebar-primary-foreground: #1c1c1e;
+  --sidebar-accent: #2c2c2f;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #333336;
+  --sidebar-ring: #a1a1aa;
+  /* Recessed backdrop a group of list rows sits on, and the hairline drawn between
+     those rows. Deliberately a separate pair from --background/--border: a grouped
+     list inverts the usual relationship, putting the *rows* on the lighter surface
+     (--card) and the page behind them on the darker one, so the group reads as a
+     single inset object rather than a stack of floating cards. --separator is
+     lighter than --border because it divides rows inside one surface rather than
+     marking where that surface ends. */
+  --surface-grouped: oklch(0.965 0.004 258);
+  --separator: oklch(0.925 0.006 258);
+  --font-sans: Geist, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Geist Mono, monospace;
+  --radius: 0.75rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 2px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.18;
+  --shadow-color: hsl(0 0% 0%);
+  /* Progressive elevation scale — each step increases blur/spread, not just opacity,
+     so cards/menus/dialogs read as genuinely closer to the viewer rather than just
+     darker. --shadow-float sits above --shadow-2xl for surfaces that lift off the
+     page entirely (dropdowns, popovers, dialogs, sheets).
+     Wide and faint rather than tight and dark: a large blur radius at low opacity
+     reads as a diffuse ambient occlusion, where a 1-2px offset at high opacity reads
+     as a hard drop shadow drawn under a sticker. The elevation difference between
+     steps is carried by blur growth, with opacity rising only slightly. */
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.04);
+  --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0px 2px 6px -1px hsl(0 0% 0% / 0.06), 0px 1px 3px -1px hsl(0 0% 0% / 0.05);
+  --shadow: 0px 4px 12px -2px hsl(0 0% 0% / 0.07), 0px 2px 4px -2px hsl(0 0% 0% / 0.05);
+  --shadow-md: 0px 8px 20px -4px hsl(0 0% 0% / 0.09), 0px 3px 8px -3px hsl(0 0% 0% / 0.06);
+  --shadow-lg: 0px 16px 32px -8px hsl(0 0% 0% / 0.11), 0px 6px 12px -6px hsl(0 0% 0% / 0.07);
+  --shadow-xl: 0px 28px 56px -12px hsl(0 0% 0% / 0.14), 0px 10px 20px -10px hsl(0 0% 0% / 0.08);
+  --shadow-2xl: 0px 40px 80px -16px hsl(0 0% 0% / 0.18);
+  --shadow-float: 0px 24px 64px -12px hsl(0 0% 0% / 0.18), 0px 8px 20px -8px hsl(0 0% 0% / 0.1);
+  --tracking-normal: 0em;
+  /* Optical correction for large text only. Type set at display sizes reads as
+     too loose at the tracking that suits body copy, so titles tighten; body text
+     must not inherit this or small sizes lose legibility. */
+  --tracking-title: -0.021em;
+  --spacing: 0.25rem;
+}
+
+[data-theme='forma'].dark {
+  --background: oklch(0.17 0.015 258);
+  --foreground: oklch(0.96 0.005 258);
+  --card: oklch(0.21 0.015 258);
+  --card-foreground: oklch(0.96 0.005 258);
+  --popover: oklch(0.23 0.015 258);
+  --popover-foreground: oklch(0.96 0.005 258);
+  --primary: oklch(0.72 0.13 258);
+  --primary-foreground: oklch(0.14 0.02 258);
+  --secondary: oklch(0.28 0.015 258);
+  --secondary-foreground: oklch(0.96 0.005 258);
+  --muted: oklch(0.25 0.015 258);
+  --muted-foreground: oklch(0.68 0.02 258);
+  --accent: oklch(0.3 0.03 258);
+  --accent-foreground: oklch(0.9 0.02 258);
+  --destructive: oklch(0.69 0.2 23.91);
+  --destructive-foreground: oklch(0.1 0 0);
+  --border: oklch(0.3 0.015 258);
+  --input: oklch(0.3 0.015 258);
+  --ring: oklch(0.72 0.13 258);
+  --chart-1: oklch(0.72 0.13 258);
+  --chart-2: oklch(0.78 0.1 200);
+  --chart-3: oklch(0.7 0.1 300);
+  --chart-4: oklch(0.78 0.1 150);
+  --chart-5: oklch(0.75 0.13 45);
+  /* --sidebar* intentionally not redeclared here — the sidebar stays the fixed dark grey set in
+     the block above in both app light and dark mode. */
+  /* Dark keeps the same "rows lighter than the backdrop they sit on" relationship as
+     light mode, which means --surface-grouped goes *below* --background here rather
+     than above it. Authored to that rule rather than inverted from the light values
+     (engineering rule 4). */
+  --surface-grouped: oklch(0.145 0.015 258);
+  --separator: oklch(0.275 0.015 258);
+  --font-sans: Geist, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Geist Mono, monospace;
+  --radius: 0.75rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 2px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.3;
+  --shadow-color: hsl(0 0% 0%);
+  /* Dark panels sit close in lightness to the background, so shadows alone read
+     weakly — opacity is boosted vs. light mode; the border/ring on Card etc. still
+     carries most of the separation, per engineering rule 4 ("not a simple inversion
+     of light mode"). Same wide-and-faint geometry as light mode, scaled up in opacity
+     rather than tightened in blur — narrowing the blur here would reintroduce the
+     hard drop shadow the light scale deliberately drops. */
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.2);
+  --shadow-xs: 0px 1px 4px 0px hsl(0 0% 0% / 0.24);
+  --shadow-sm: 0px 2px 6px -1px hsl(0 0% 0% / 0.28), 0px 1px 3px -1px hsl(0 0% 0% / 0.24);
+  --shadow: 0px 4px 12px -2px hsl(0 0% 0% / 0.32), 0px 2px 4px -2px hsl(0 0% 0% / 0.26);
+  --shadow-md: 0px 8px 20px -4px hsl(0 0% 0% / 0.36), 0px 3px 8px -3px hsl(0 0% 0% / 0.28);
+  --shadow-lg: 0px 16px 32px -8px hsl(0 0% 0% / 0.42), 0px 6px 12px -6px hsl(0 0% 0% / 0.3);
+  --shadow-xl: 0px 28px 56px -12px hsl(0 0% 0% / 0.48), 0px 10px 20px -10px hsl(0 0% 0% / 0.34);
+  --shadow-2xl: 0px 40px 80px -16px hsl(0 0% 0% / 0.55);
+  --shadow-float: 0px 24px 64px -12px hsl(0 0% 0% / 0.55), 0px 8px 20px -8px hsl(0 0% 0% / 0.36);
+}
+
+[data-theme='forma'] {
+  @theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-surface-grouped: var(--surface-grouped);
+    --color-separator: var(--separator);
+    --tracking-title: var(--tracking-title);
+    --font-sans: var(--font-sans);
+    --font-mono: var(--font-mono);
+    --font-serif: var(--font-serif);
+    /* --radius is the *surface* radius (cards, sheets, dialogs). Controls need a
+       visibly tighter corner than the surface they sit on — a 32px-tall button at
+       the full surface radius reads as a pill rather than a button — so the derived
+       steps subtract rather than add, and only --radius-2xl goes above it.
+       Chosen so the whole scale moves up by 2px against the previous 0.625rem base
+       instead of jumping: sm 6→8, md 8→10, lg 10→12, xl unchanged at 14. */
+    --radius-sm: calc(var(--radius) - 6px);
+    --radius-md: calc(var(--radius) - 4px);
+    --radius-lg: calc(var(--radius) - 2px);
+    --radius-xl: var(--radius);
+    --radius-2xl: calc(var(--radius) + 4px);
+    --shadow-2xs: var(--shadow-2xs);
+    --shadow-xs: var(--shadow-xs);
+    --shadow-sm: var(--shadow-sm);
+    --shadow: var(--shadow);
+    --shadow-md: var(--shadow-md);
+    --shadow-lg: var(--shadow-lg);
+    --shadow-xl: var(--shadow-xl);
+    --shadow-2xl: var(--shadow-2xl);
+    --shadow-float: var(--shadow-float);
+  }
+}

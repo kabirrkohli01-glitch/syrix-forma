@@ -1,0 +1,1 @@
+ALTER TABLE "employees" ADD COLUMN "step_up_verified_at" timestamp with time zone;

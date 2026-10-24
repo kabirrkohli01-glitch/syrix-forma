@@ -1,0 +1,1 @@
+ALTER TABLE "employees" ADD COLUMN "hr_admin" boolean DEFAULT false NOT NULL;

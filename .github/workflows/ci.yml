@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  # Lint, typecheck, and the real test suite (vitest against a live Postgres — see
+  # apps/web/tests/setup.ts) — never the shared dev Neon DB, always this throwaway container.
+  lint-typecheck-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: syrix_forma_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # Throwaway container credential, not a real secret — safe to inline here rather than a
+      # repo secret.
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/syrix_forma_test
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - name: Lint (plain — pre-existing warnings in the starter shell don't block PRs)
+        run: npm run lint
+      - run: npm run typecheck
+      - run: npm run db:migrate
+      - run: npm test
+
+  # npm's own advisory database — free, no account needed.
+  dependency-audit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+
+  # OSV's cross-ecosystem vulnerability database — belt-and-suspenders against npm audit,
+  # Apache-2.0, no signup. Google's reusable workflow, not a step-level action.
+  osv-scan:
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.0
+    with:
+      scan-args: |-
+        --lockfile=apps/web/package-lock.json
+
+  # gitleaks CLI run directly via Docker, not the marketplace Action wrapper — sidesteps that
+  # wrapper's private-repo licensing terms, which weren't independently verifiable at the time
+  # this workflow was written. The gitleaks CLI itself is MIT, unambiguously free forever.
+  # fetch-depth: 0 matters — gitleaks needs full history to catch a secret committed then
+  # "removed" in a later commit; a shallow checkout would miss it.
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect --source="/repo" -v
+
+  # Semgrep OSS CLI, not CodeQL — verified live (see DEPENDENCIES.md): GitHub Code Security
+  # (CodeQL upload) has no free tier for private repos, $30/active-committer/month. Semgrep OSS
+  # is genuinely free for private repos with equivalent OWASP-Top-Ten-shaped coverage.
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install semgrep
+      - name: Run Semgrep
+        run: semgrep scan --config p/ci --config p/owasp-top-ten --config p/typescript --config p/react apps/web

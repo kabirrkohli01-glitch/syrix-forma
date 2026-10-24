@@ -1,0 +1,23 @@
+/* SYRIX Forma design tokens (engineering rule 4) */
+@import './themes/forma.css';
+
+/* The assistant's own surface. Everything in it is scoped under `.forma-ai` and
+   reaches that one screen only — see the note at the top of the file. */
+@import './forma-ai.css';
+
+body {
+  @apply overscroll-none;
+}
+
+:root {
+  /* Matches Header's rendered height (components/layout/header.tsx: h-14 desktop / h-16
+     mobile) — previously computed to 49px against an actual 56px, a stale token. */
+  --header-height: 3.5rem;
+}
+
+[data-theme] body {
+  --font-sans: initial;
+  --font-mono: initial;
+  --font-serif: initial;
+  font-family: var(--font-sans);
+}

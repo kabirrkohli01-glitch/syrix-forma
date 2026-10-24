@@ -1,0 +1,66 @@
+# SYRIX Forma — the deployed stack.
+#
+# Three containers: the app, the queue worker, and the Cloudflare Tunnel that puts the app on the
+# internet. Postgres (Neon), Redis (Upstash) and object storage (Cloudflare R2) are managed
+# services and are not started here — see DEPENDENCIES.md.
+#
+# Note what is absent: there is no `ports:` mapping on the app. Nothing on the host's network can
+# reach it, and no port is open to the internet. The tunnel makes an *outbound* connection to
+# Cloudflare and traffic arrives back down it, so the machine running this needs no public IP, no
+# port forwarding, and no inbound firewall rule at all. That is the main security reason to run it
+# this way rather than exposing a port directly.
+#
+#   docker compose up -d --build
+#
+# Secrets come from .env.production (gitignored), never from this file.
+
+name: syrix-forma
+
+services:
+  app:
+    build:
+      context: .
+      target: runner
+      args:
+        # Inlined into the client bundle at build time — see the Dockerfile's note on why the
+        # Clerk key in particular has to be the real one here and not only at run time.
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+        NEXT_PUBLIC_SENTRY_DISABLED: ${NEXT_PUBLIC_SENTRY_DISABLED:-true}
+    env_file: .env.production
+    restart: unless-stopped
+    # The app refuses to boot on incomplete configuration (lib/config/preflight.ts), so a restart
+    # loop here means a missing variable rather than a crash — read the logs, don't retry.
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:3000/auth/sign-in').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 3
+    security_opt:
+      - no-new-privileges:true
+
+  worker:
+    build:
+      context: .
+      target: worker
+    env_file: .env.production
+    restart: unless-stopped
+    depends_on:
+      - app
+    security_opt:
+      - no-new-privileges:true
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    # `run` with a token is the connector-only mode: this container can serve the hostnames the
+    # tunnel is configured for and nothing else. It holds no Cloudflare API credential and cannot
+    # change DNS, the account, or the tunnel's own routing.
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    restart: unless-stopped
+    depends_on:
+      - app
+    security_opt:
+      - no-new-privileges:true

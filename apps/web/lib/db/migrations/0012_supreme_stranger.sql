@@ -1,0 +1,2 @@
+ALTER TABLE "clients" ADD COLUMN "last_inactivity_notified_at" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "project_milestones" ADD COLUMN "last_reminder_sent_at" timestamp with time zone;

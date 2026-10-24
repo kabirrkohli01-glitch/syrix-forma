@@ -1,0 +1,185 @@
+/* The SYRIX AI surface.
+ *
+ * SCOPED, DELIBERATELY. Everything here lives under `.forma-ai` and touches
+ * nothing else. engineering rule 4 locks the Hub to a restrained blue accent and
+ * bans decorative animation, and that stays true of the Hub: the assistant is
+ * one screen with its own warm accent, chosen from a reference the product
+ * owner supplied, and it does not leak into the tables and dashboards the rest
+ * of the app is made of.
+ *
+ * THE AMBER IS A SIGNAL AS WELL AS A LOOK. Everywhere else in the Hub, blue
+ * means "a record" and the interface is deterministic. This screen is the only
+ * one whose output is generated, and giving it its own colour makes that
+ * visible at a glance rather than something a reader has to remember.
+ *
+ * THE ARC FIELD RUNS ONCE, FOR ABOUT TWO SECONDS, AND THEN HOLDS. It is a
+ * transition into a resting state, not a loop — a background that keeps moving
+ * behind text is the decorative animation the house rules ban, and it is also
+ * genuinely harder to read against. `prefers-reduced-motion` skips the movement
+ * entirely and renders the resting state immediately.
+ */
+
+.forma-ai {
+  /* Sampled from the reference: a neutral white that carries on near-black without
+     tinting, and a lighter tint for the parts that must stay legible at
+     small sizes. */
+  --ai-amber: oklch(0.96 0 0);
+  --ai-amber-bright: oklch(0.99 0 0);
+  --ai-amber-deep: oklch(0.78 0 0);
+  --ai-amber-ink: oklch(0.24 0 0);
+
+  /* The field the arcs are drawn on. Kept close to the app's own card colour so
+     the panel still reads as part of the Hub rather than as an embedded site. */
+  --ai-canvas: oklch(0.16 0.012 258);
+  --ai-canvas-edge: oklch(0.13 0.012 258);
+}
+
+/* Light mode is not a tinted copy of dark.
+ *
+ * The reference is a dark screen, and a dark panel dropped into a white app
+ * looks like a screenshot somebody pasted in. So light mode keeps the same neutral
+ * accent and the same arc geometry against a white field — the arcs read as ink
+ * on paper rather than as light in a void, which is the honest translation. */
+html:not(.dark) .forma-ai {
+  --ai-canvas: oklch(0.99 0 0);
+  --ai-canvas-edge: oklch(0.97 0 0);
+  --ai-amber: oklch(0.32 0 0);
+  --ai-amber-bright: oklch(0.2 0 0);
+  --ai-amber-deep: oklch(0.45 0 0);
+  --ai-amber-ink: oklch(0.42 0 0);
+}
+
+/* ---------- the arc field ---------- */
+
+.forma-ai-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 8%, var(--ai-canvas) 0%, var(--ai-canvas-edge) 100%);
+}
+
+/* Each arc is one very large, very flat ellipse with a soft edge, positioned so
+   only its top curve crosses the panel. Three of them at slightly different
+   radii give the layered sweep in the reference without any of them being a
+   drawn shape that could go wrong at an unexpected aspect ratio. */
+.forma-ai-arc {
+  position: absolute;
+  left: 50%;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  transform: translateX(-50%);
+  will-change: transform, opacity;
+}
+
+.forma-ai-arc-1 {
+  bottom: -128%;
+  width: 190%;
+  aspect-ratio: 1 / 1;
+  border-color: color-mix(in oklch, var(--ai-amber) 34%, transparent);
+  box-shadow: 0 0 90px -10px color-mix(in oklch, var(--ai-amber-deep) 30%, transparent);
+}
+
+.forma-ai-arc-2 {
+  bottom: -152%;
+  width: 230%;
+  aspect-ratio: 1 / 1;
+  border-color: color-mix(in oklch, var(--ai-amber) 22%, transparent);
+}
+
+.forma-ai-arc-3 {
+  bottom: -178%;
+  width: 275%;
+  aspect-ratio: 1 / 1;
+  border-color: color-mix(in oklch, var(--ai-amber) 14%, transparent);
+}
+
+/* The warm bloom the arcs sit in. Static — the movement is the arcs' job, and
+   two things easing at once reads as a wobble. */
+.forma-ai-bloom {
+  position: absolute;
+  left: 50%;
+  bottom: -34%;
+  width: 150%;
+  height: 90%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    color-mix(in oklch, var(--ai-amber-deep) 22%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+/* ---------- the one animation ---------- */
+
+/* Arcs settle upward into place and the whole field fades in. Ends where the
+   static state already is, so the resting appearance is defined once by the
+   rules above rather than twice — a keyframe that finishes somewhere the base
+   style does not describe is a keyframe that drifts. */
+@keyframes forma-ai-settle {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(7%) scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+@keyframes forma-ai-bloom-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.forma-ai-field[data-settling='true'] .forma-ai-arc {
+  animation: forma-ai-settle 1.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Staggered so the arcs arrive as a sweep rather than as one object. The last
+   one lands at 1.9s + 0.25s, which is the two seconds the whole thing is
+   allowed. */
+.forma-ai-field[data-settling='true'] .forma-ai-arc-2 {
+  animation-delay: 0.12s;
+}
+
+.forma-ai-field[data-settling='true'] .forma-ai-arc-3 {
+  animation-delay: 0.25s;
+}
+
+.forma-ai-field[data-settling='true'] .forma-ai-bloom {
+  animation: forma-ai-bloom-in 1.6s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forma-ai-field[data-settling='true'] .forma-ai-arc,
+  .forma-ai-field[data-settling='true'] .forma-ai-bloom {
+    animation: none;
+  }
+}
+
+/* ---------- accents ---------- */
+
+.forma-ai-gradient-text {
+  background: linear-gradient(100deg, var(--ai-amber-bright), var(--ai-amber-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The mark beside the title and above the empty state. A ring rather than a
+   filled disc, so it reads as a badge and not as a button somebody forgot to
+   wire up. */
+.forma-ai-mark {
+  background: radial-gradient(60% 60% at 50% 40%, color-mix(in oklch, var(--ai-amber) 22%, transparent), transparent 70%);
+  border: 1px solid color-mix(in oklch, var(--ai-amber) 40%, transparent);
+  color: var(--ai-amber-bright);
+}
+
+/* The logo needs no plate behind it. `make-logo-transparent.mjs` cut the black
+   field out of the artwork and trimmed the margin, so the mark stands on any
+   background in either theme — see `forma-ai-mark.tsx`. */

@@ -1,0 +1,251 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1788710355949,
+      "tag": "0000_mute_johnny_blaze",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788711331847,
+      "tag": "0001_bumpy_wallop",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788713051392,
+      "tag": "0002_chief_namor",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788713245990,
+      "tag": "0003_shocking_the_professor",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788735624243,
+      "tag": "0004_cloudy_skrulls",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788737549508,
+      "tag": "0005_task_completed_project_sync",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788739053867,
+      "tag": "0006_faithful_ultragirl",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1788739064134,
+      "tag": "0007_seed_phase4_integrations",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1788739269758,
+      "tag": "0008_low_vanisher",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1788792029399,
+      "tag": "0009_sad_edwin_jarvis",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1788798640361,
+      "tag": "0010_shocking_ben_urich",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1788799193330,
+      "tag": "0011_outstanding_martin_li",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1788799719025,
+      "tag": "0012_supreme_stranger",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1788799723775,
+      "tag": "0013_seed_phase5_automations",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1788800422761,
+      "tag": "0014_freezing_slapstick",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1788801405273,
+      "tag": "0015_simple_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1788808933039,
+      "tag": "0016_panoramic_marvel_boy",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1788985124948,
+      "tag": "0017_wet_the_hand",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1788988491801,
+      "tag": "0018_add_employee_preferred_name",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1789066900882,
+      "tag": "0019_chubby_firedrake",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1789068243288,
+      "tag": "0020_luxuriant_amazoness",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1789152391198,
+      "tag": "0021_third_karen_page",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1789166372286,
+      "tag": "0022_flaky_mordo",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1789166500000,
+      "tag": "0023_seed_hr_leave_reference_data",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1789167198763,
+      "tag": "0024_shocking_cargill",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1789167779255,
+      "tag": "0025_tiny_squadron_supreme",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1789167800000,
+      "tag": "0026_seed_hr_expense_reference_data",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1789168363637,
+      "tag": "0027_amused_vance_astro",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1789211353107,
+      "tag": "0028_add_hr_admin_capability",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1789212491778,
+      "tag": "0029_add_document_files",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1789213424140,
+      "tag": "0030_add_connectors",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1789214794979,
+      "tag": "0031_add_missing_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1789323776393,
+      "tag": "0032_nosy_red_hulk",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1789328348002,
+      "tag": "0033_hesitant_omega_red",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1789329669325,
+      "tag": "0034_wandering_lilandra",
+      "breakpoints": true
+    }
+  ]
+}
